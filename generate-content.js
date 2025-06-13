@@ -1,4 +1,4 @@
-undefinedconst fs = require('fs');
+const fs = require('fs');
 const https = require('https');
 
 // 您的提示詞
