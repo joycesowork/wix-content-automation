@@ -55,14 +55,14 @@ async function generateContent() {
     console.log('🚀 開始生成週更新內容...');
     
     const data = JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4o-mini",  // 改回較穩定的模型
         messages: [
             {
                 role: "user",
                 content: PROMPT
             }
         ],
-        max_tokens: 8000,
+        max_tokens: 12000,  // 稍微降低 token 數量
         temperature: 0.3
     });
 
@@ -82,31 +82,67 @@ async function generateContent() {
         const req = https.request(options, (res) => {
             let responseData = '';
 
+            console.log(`📡 API 回應狀態: ${res.statusCode}`);
+
             res.on('data', (chunk) => {
                 responseData += chunk;
             });
 
             res.on('end', () => {
                 try {
-                    const response = JSON.parse(responseData);
-                    if (response.choices && response.choices[0]) {
-                        let content = response.choices[0].message.content;
-                        
-                        // 清理格式
-                        content = content.replace(/```html\n?/g, '').replace(/```\n?$/g, '').trim();
-                        
-                        resolve(content);
-                    } else {
-                        reject(new Error('Invalid API response'));
+                    // 輸出原始回應以便診斷
+                    console.log('📄 API 回應長度:', responseData.length);
+                    
+                    // 檢查是否是 JSON
+                    if (!responseData.trim().startsWith('{')) {
+                        console.error('❌ 非 JSON 回應:', responseData.substring(0, 500));
+                        reject(new Error('API 回應不是 JSON 格式'));
+                        return;
                     }
+
+                    const response = JSON.parse(responseData);
+                    
+                    // 檢查錯誤
+                    if (response.error) {
+                        console.error('❌ OpenAI API 錯誤:', response.error);
+                        reject(new Error(`OpenAI API 錯誤: ${response.error.message}`));
+                        return;
+                    }
+                    
+                    // 檢查回應結構
+                    if (!response.choices || !response.choices[0] || !response.choices[0].message) {
+                        console.error('❌ 無效的回應結構:', JSON.stringify(response, null, 2));
+                        reject(new Error('API 回應缺少必要欄位'));
+                        return;
+                    }
+                    
+                    let content = response.choices[0].message.content;
+                    
+                    if (!content) {
+                        reject(new Error('API 回應內容為空'));
+                        return;
+                    }
+                    
+                    console.log('✅ 內容生成成功，長度:', content.length);
+                    
+                    // 清理格式
+                    content = content.replace(/```html\n?/g, '');
+                    content = content.replace(/```\n?$/g, '');
+                    content = content.trim();
+                    
+                    resolve(content);
+                    
                 } catch (error) {
-                    reject(error);
+                    console.error('❌ JSON 解析錯誤:', error.message);
+                    console.error('📄 原始回應開頭:', responseData.substring(0, 1000));
+                    reject(new Error(`JSON 解析失敗: ${error.message}`));
                 }
             });
         });
 
         req.on('error', (error) => {
-            reject(error);
+            console.error('❌ 請求錯誤:', error.message);
+            reject(new Error(`請求失敗: ${error.message}`));
         });
 
         req.write(data);
