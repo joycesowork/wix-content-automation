@@ -1,0 +1,38 @@
+name: Weekly Content Generator
+
+on:
+  schedule:
+    # 每週日晚上 11:00 (UTC) 執行，台灣時間週一早上 7:00
+    - cron: '0 23 * * 0'
+  workflow_dispatch:  # 允許手動觸發
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm init -y
+        npm install openai
+        
+    - name: Generate weekly content
+      run: node generate-content.js
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        
+    - name: Commit and push generated content
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add generated-content.html
+        git commit -m "Generated weekly content - $(date)" || exit 0
+        git push
