@@ -210,7 +210,7 @@ def save_content(content):
     content_with_timestamp = f"<!-- Generated on: {timestamp} -->\n{content}"
     
     # 儲存 HTML 檔案
-    with open('generated-content.html', 'w', encoding='utf-8') as f:
+    with open('generated_content.html', 'w', encoding='utf-8') as f:
         f.write(content_with_timestamp)
     
     print("📄 HTML 內容已儲存為 generated-content.html")
@@ -270,7 +270,7 @@ def save_content(content):
 
 ## 📊 技術統計
 - **生成時間：** {timestamp}
-- **Python 腳本：** generate-content.py
+- **Python 腳本：** generated_content.py
 - **AI 模型：** GPT-4o-mini
 - **內容驗證：** ✅ 通過
 
@@ -306,7 +306,7 @@ def main():
         
         print("=" * 60)
         print("🎉 內容生成完成！")
-        print("📁 檔案已儲存：generated-content.html")
+        print("📁 檔案已儲存：generated_content.html")
         print("📋 說明已更新：README.md")
         print("=" * 60)
         
