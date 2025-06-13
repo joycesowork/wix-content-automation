@@ -14,18 +14,18 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Setup Python
+      uses: actions/setup-python@v4
       with:
-        node-version: '18'
+        python-version: '3.11'
         
     - name: Install dependencies
       run: |
-        npm init -y
-        npm install openai
+        python -m pip install --upgrade pip
+        pip install requests
         
     - name: Generate weekly content
-      run: node generate-content.js
+      run: python generate-content.py
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         
@@ -33,6 +33,6 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add generated-content.html
+        git add generated-content.html README.md
         git commit -m "Generated weekly content - $(date)" || exit 0
         git push
