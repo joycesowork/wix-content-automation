@@ -210,7 +210,7 @@ def save_content(content):
     content_with_timestamp = f"<!-- Generated on: {timestamp} -->\n{content}"
     
     # 儲存 HTML 檔案
-    with open('generated_content.html', 'w', encoding='utf-8') as f:
+    with open('generated-content.html', 'w', encoding='utf-8') as f:
         f.write(content_with_timestamp)
     
     print("📄 HTML 內容已儲存為 generated-content.html")
@@ -306,7 +306,7 @@ def main():
         
         print("=" * 60)
         print("🎉 內容生成完成！")
-        print("📁 檔案已儲存：generated_content.html")
+        print("📁 檔案已儲存：generated-content.html")
         print("📋 說明已更新：README.md")
         print("=" * 60)
         
