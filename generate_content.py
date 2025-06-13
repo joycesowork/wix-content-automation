@@ -361,7 +361,7 @@ def analyze_reference_format():
 </body>
 </html>"""
 
-        analysis_prompt = f"""你現在是一個專業的網頁設計複製專家。請逐行分析以下HTML範例，並記住每一個細節：
+    analysis_prompt = f"""你現在是一個專業的網頁設計複製專家。請逐行分析以下HTML範例，並記住每一個細節：
 
 {reference_html}
 
