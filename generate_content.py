@@ -466,7 +466,7 @@ def generate_content_with_learned_format(analysis_result):
     
     current_date = datetime.now().strftime('%Y年%m月')
     
-        generation_prompt = f"""你剛才已經詳細分析了一個HTML範例的每一個細節。現在請完美複製這個格式，生成一個內容豐富的新網頁。
+    generation_prompt = f"""你剛才已經詳細分析了一個HTML範例的每一個細節。現在請完美複製這個格式，生成一個內容豐富的新網頁。
 
 你必須：
 
