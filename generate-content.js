@@ -51,6 +51,48 @@ const PROMPT = `## 網頁更新指令
 
 請嚴格按照以上規範生成完整的HTML文檔，確保格式完全符合現代網頁標準。`;
 
+async function testApiKey() {
+    console.log('🔑 測試 API Key...');
+    
+    const data = JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: "Say hello" }],
+        max_tokens: 10
+    });
+
+    const options = {
+        hostname: 'api.openai.com',
+        port: 443,
+        path: '/v1/chat/completions',
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+            'Content-Length': data.length
+        }
+    };
+
+    return new Promise((resolve, reject) => {
+        const req = https.request(options, (res) => {
+            let responseData = '';
+            res.on('data', (chunk) => { responseData += chunk; });
+            res.on('end', () => {
+                console.log(`🔑 API Key 測試回應狀態: ${res.statusCode}`);
+                if (res.statusCode === 200) {
+                    console.log('✅ API Key 有效');
+                    resolve(true);
+                } else {
+                    console.log('❌ API Key 測試失敗:', responseData);
+                    reject(new Error('API Key 無效'));
+                }
+            });
+        });
+        req.on('error', (error) => reject(error));
+        req.write(data);
+        req.end();
+    });
+}
+
 async function generateContent() {
     console.log('🚀 開始生成週更新內容...');
     
@@ -152,6 +194,17 @@ async function generateContent() {
 
 async function main() {
     try {
+        // 先測試 API Key
+        await testApiKey();
+        
+        console.log('📝 正在生成符合指定格式的 HTML 內容...');
+        const htmlContent = await generateContent();
+        
+        // 驗證生成的內容
+        if (!htmlContent.includes('<!DOCTYPE html>') && !htmlContent.includes('<html')) {
+            console.warn('⚠️  警告：生成的內容可能缺少 HTML 宣告');
+        }
+        
         const htmlContent = await generateContent();
         
         // 添加生成時間戳記
