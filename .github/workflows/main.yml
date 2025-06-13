@@ -25,7 +25,7 @@ jobs:
         pip install requests
         
     - name: Generate weekly content
-      run: python generate-content.py
+      run: python3 generate_content.py
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         
