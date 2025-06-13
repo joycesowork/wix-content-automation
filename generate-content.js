@@ -205,8 +205,6 @@ async function main() {
             console.warn('⚠️  警告：生成的內容可能缺少 HTML 宣告');
         }
         
-        const htmlContent = await generateContent();
-        
         // 添加生成時間戳記
         const timestamp = new Date().toISOString();
         const contentWithTimestamp = `<!-- Generated on: ${timestamp} -->\n${htmlContent}`;
