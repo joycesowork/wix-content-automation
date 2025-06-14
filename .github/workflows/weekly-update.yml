@@ -1,0 +1,38 @@
+name: Weekly Website Update
+
+on:
+  schedule:
+    # 每週五早上 9:00 (UTC) 執行，台灣時間下午 5:00
+    - cron: '0 9 * * 5'
+  workflow_dispatch: # 允許手動觸發
+
+jobs:
+  update-website:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install openai requests python-dateutil
+        
+    - name: Run website update
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        python scripts/update-website.py
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add output/
+        git commit -m "Weekly update: $(date +'%Y-%m-%d')" || exit 0
+        git push
