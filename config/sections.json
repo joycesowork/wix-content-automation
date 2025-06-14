@@ -1,0 +1,25 @@
+{
+    "websites": [
+      {
+        "name": "全球商機追蹤",
+        "reference_url": "https://yrshgwte.gensparkspace.com/",
+        "output_filename": "taiwan_consumer_goods_global_market"
+      },
+      {
+        "name": "關稅新聞", 
+        "reference_url": "https://psfnidkb.gensparkspace.com/",
+        "output_filename": "taiwan_export_tariff_news"
+      },
+      {
+        "name": "價格追蹤",
+        "reference_url": "",
+        "output_filename": "price_tracking_report"
+      },
+      {
+        "name": "產品設計追蹤",
+        "reference_url": "",
+        "output_filename": "product_design_trends"
+      }
+    ]
+  }
+  

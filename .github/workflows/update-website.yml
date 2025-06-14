@@ -2,8 +2,8 @@ name: Weekly Website Update
 
 on:
   schedule:
-    # 每週五早上 9:00 (UTC) 執行，台灣時間下午 5:00
-    - cron: '0 9 * * 5'
+    # 每週一早上 9:00 (UTC) 執行，相當於台灣時間週一下午 5:00
+    - cron: '0 9 * * 1'
   workflow_dispatch: # 允許手動觸發
 
 jobs:
@@ -13,26 +13,35 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-        
+
     - name: Install dependencies
       run: |
-        pip install openai requests python-dateutil
-        
-    - name: Run website update
+        pip install -r requirements.txt
+
+    - name: Update website content
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         python scripts/update-website.py
-        
+
     - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add output/
-        git commit -m "Weekly update: $(date +'%Y-%m-%d')" || exit 0
+        git add docs/
+        git diff --staged --quiet || git commit -m "自動更新網站內容 - $(date +'%Y-%m-%d')"
         git push
+
+    - name: Deploy to GitHub Pages (optional)
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
