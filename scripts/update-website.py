@@ -5,7 +5,7 @@ import re
 
 def load_prompt():
     """載入更新指令"""
-    with open('prompts/update-prompt.txt', 'r', encoding='utf-8') as f:
+    with open('prompts/關稅新聞.txt', 'r', encoding='utf-8') as f:
         return f.read()
 
 def load_template():
