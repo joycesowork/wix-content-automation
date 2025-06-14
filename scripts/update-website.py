@@ -10,7 +10,7 @@ def load_prompt():
 
 def load_template():
     """載入原始HTML模板"""
-    with open('templates/original-template.html', 'r', encoding='utf-8') as f:
+    with open('templates/關稅新聞.html', 'r', encoding='utf-8') as f:
         return f.read()
 
 def call_openai_api(prompt, template):
